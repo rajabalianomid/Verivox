@@ -17,7 +17,7 @@ To help you get started, we've also set up:
  Application has 2 parts Verivox.Service.API: WebAPI, Verivox.Web: Simple user Interface for managing application functionality
  This application is base on plugins, you could add functionality witout modify app core, for example in this application I implemented 2 plugins
 
-### 2) Ora.Web: ###
+### 2) Plugins: ###
 * Verivox.Plugin.ProductConditions.Basic: For simple calculate Tariff Comparison
 * Verivox.Plugin.ProductConditions.Advance: For Advance calculate Tariff Comparison with folmura
 By this solution you could each calculate for Tariff Comparison in futhre easyly and you don't need change app core.
