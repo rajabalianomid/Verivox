@@ -1,0 +1,11 @@
+﻿{
+  "Group": "Electric",
+  "FriendlyName": "Advance Product Condition",
+  "SystemName": "ProductConditions.Advance",
+  "Version": "1.00",
+  "SupportedVersions": [ "1.00" ],
+  "Author": "Omid Rajabalian",
+  "DisplayOrder": 1,
+  "FileName": "Verivox.Plugin.ProductConditions.Advance.dll",
+  "Description": "This plugin allows to you caculate annal cost in Advance way"
+}

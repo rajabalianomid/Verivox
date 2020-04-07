@@ -1,0 +1,9 @@
+﻿{
+  "InstalledPluginNames": [
+    "ProductConditions.Basic",
+    "ProductConditions.Advance"
+  ],
+  "PluginNamesToUninstall": [],
+  "PluginNamesToDelete": [],
+  "PluginNamesToInstall": []
+}

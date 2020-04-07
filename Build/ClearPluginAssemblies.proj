@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <Copyright>Copyright © Omid Rajabalian</Copyright>
+    <Company>Verivox</Company>
+    <Authors>Omid Rajabalian</Authors>
+    <OutputPath>$(MSBuildProjectDirectory)\..\Verivox.Service.API\bin\$(Configuration)</OutputPath>
+  </PropertyGroup> 
+
+  <Target Name="VerivoxClear">
+    
+    <!-- When .NET Core builds a project, it copies all referenced libraries to the output folder.
+    For plugins it creates too many unnecessary files that just take up space.
+    At the moment you can't disable this behavior. That's why we have to manually delete all unnecessary libraries from plugin output directories. -->  
+    <Exec Command='dotnet "ClearPluginAssemblies.dll" "OutputPath=$(OutputPath)|PluginPath=$(PluginPath)|SaveLocalesFolders=$(SaveLocalesFolders)"' />
+  </Target> 
+      
+</Project>

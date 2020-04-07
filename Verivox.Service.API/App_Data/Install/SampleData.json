@@ -1,0 +1,36 @@
+{
+  "productTypes": [
+    {
+      "id": 1,
+      "name": "ElectricTariff",
+      "mensuration": "kWh/year"
+    }
+  ],
+  "products": [
+    {
+      "name": "Product A",
+      "baseAmount": 22,
+      "ProductTypeId": 1
+    },
+    {
+      "name": "Product B",
+      "baseAmount": 30,
+      "ProductTypeId": 1
+    },
+    {
+      "name": "Product C",
+      "baseAmount": 35,
+      "ProductTypeId": 1
+    },
+    {
+      "name": "Product D",
+      "baseAmount": 20,
+      "ProductTypeId": 1
+    },
+    {
+      "name": "Product E",
+      "baseAmount": 15,
+      "ProductTypeId": 1
+    }
+  ]
+}

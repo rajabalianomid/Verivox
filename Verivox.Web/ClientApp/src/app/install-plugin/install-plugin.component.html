@@ -1,0 +1,21 @@
+<h1 id="tableLabel">Install/Uninstall Plugins</h1>
+<div class="alert alert-info" role="alert">
+  <p>After Install/Unistall you need restart your application for working as well</p>
+</div>
+<p *ngIf="!pluginsmodel.plugins"><em>Loading...</em></p>
+<table class='table table-striped' aria-labelledby="tableLabel" *ngIf="pluginsmodel.plugins">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Description</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let item of pluginsmodel.plugins">
+      <td>{{ item.name}}</td>
+      <td>{{ item.description}}</td>
+      <td><button class="btn btn-primary" (click)="Install(item.name , !item.installed)">{{item.installed?'Uninstall':'Install'}}</button></td>
+    </tr>
+  </tbody>
+</table>
