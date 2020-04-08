@@ -25,11 +25,13 @@ namespace Verivox.Service
         /// <returns>Plugin descriptors</returns>
         public virtual IEnumerable<PluginDescriptor> GetPluginDescriptors<TPlugin>() where TPlugin : class, IPlugin
         {
-            var pluginDescriptors = _pluginsInfo.PluginDescriptors;
+            IEnumerable<PluginDescriptor> pluginDescriptors = _pluginsInfo.PluginDescriptors;
 
             //filter by the passed type
             if (typeof(TPlugin) != typeof(IPlugin))
+            {
                 pluginDescriptors = pluginDescriptors.Where(descriptor => typeof(TPlugin).IsAssignableFrom(descriptor.PluginType));
+            }
 
             //order by group name
             pluginDescriptors = pluginDescriptors.OrderBy(descriptor => descriptor.Group)
@@ -55,7 +57,9 @@ namespace Verivox.Service
         {
             //add plugin name to the appropriate list (if not yet contained) and save changes
             if (_pluginsInfo.PluginNamesToInstall.Any(item => item == systemName))
+            {
                 return;
+            }
 
             _pluginsInfo.PluginNamesToInstall.Add(systemName);
             _pluginsInfo.Save();
@@ -70,9 +74,12 @@ namespace Verivox.Service
         {
             //add plugin name to the appropriate list (if not yet contained) and save changes
             if (_pluginsInfo.PluginNamesToUninstall.Contains(systemName))
+            {
                 return;
-            var descriptor = GetPluginDescriptorBySystemName<IPlugin>(systemName);
-            var plugin = descriptor?.Instance<IPlugin>();
+            }
+
+            PluginDescriptor descriptor = GetPluginDescriptorBySystemName<IPlugin>(systemName);
+            IPlugin plugin = descriptor?.Instance<IPlugin>();
             plugin?.PreparePluginToUninstall();
 
             _pluginsInfo.PluginNamesToUninstall.Add(systemName);
@@ -83,16 +90,18 @@ namespace Verivox.Service
         public virtual void InstallPlugins()
         {
             //get all uninstalled plugins
-            var pluginDescriptors = _pluginsInfo.PluginDescriptors.Where(descriptor => !descriptor.Installed).ToList();
+            List<PluginDescriptor> pluginDescriptors = _pluginsInfo.PluginDescriptors.Where(descriptor => !descriptor.Installed).ToList();
 
             //filter plugins need to install
             pluginDescriptors = pluginDescriptors.Where(descriptor => _pluginsInfo.PluginNamesToInstall
                 .Any(item => item.Equals(descriptor.SystemName))).ToList();
             if (!pluginDescriptors.Any())
+            {
                 return;
+            }
 
             //install plugins
-            foreach (var descriptor in pluginDescriptors.OrderBy(pluginDescriptor => pluginDescriptor.DisplayOrder))
+            foreach (PluginDescriptor descriptor in pluginDescriptors.OrderBy(pluginDescriptor => pluginDescriptor.DisplayOrder))
             {
                 try
                 {
@@ -100,7 +109,7 @@ namespace Verivox.Service
                     descriptor.Instance<IPlugin>().Install();
 
                     //remove and add plugin system name to appropriate lists
-                    var pluginToInstall = _pluginsInfo.PluginNamesToInstall
+                    string pluginToInstall = _pluginsInfo.PluginNamesToInstall
                         .FirstOrDefault(plugin => plugin.Equals(descriptor.SystemName));
                     _pluginsInfo.InstalledPluginNames.Add(descriptor.SystemName);
                     _pluginsInfo.PluginNamesToInstall.Remove(pluginToInstall);
@@ -110,7 +119,7 @@ namespace Verivox.Service
                     descriptor.Installed = true;
                     descriptor.ShowInPluginsList = true;
                 }
-                catch (Exception exception)
+                catch (Exception)
                 {
                     //log error
                 }
@@ -123,17 +132,19 @@ namespace Verivox.Service
         public virtual void UninstallPlugins()
         {
             //get all installed plugins
-            var pluginDescriptors = _pluginsInfo.PluginDescriptors.Where(descriptor => descriptor.Installed).ToList();
+            List<PluginDescriptor> pluginDescriptors = _pluginsInfo.PluginDescriptors.Where(descriptor => descriptor.Installed).ToList();
 
             //filter plugins need to uninstall
             pluginDescriptors = pluginDescriptors
                 .Where(descriptor => _pluginsInfo.PluginNamesToUninstall.Contains(descriptor.SystemName)).ToList();
             if (!pluginDescriptors.Any())
+            {
                 return;
+            }
 
 
             //uninstall plugins
-            foreach (var descriptor in pluginDescriptors.OrderByDescending(pluginDescriptor => pluginDescriptor.DisplayOrder))
+            foreach (PluginDescriptor descriptor in pluginDescriptors.OrderByDescending(pluginDescriptor => pluginDescriptor.DisplayOrder))
             {
                 try
                 {
@@ -149,7 +160,7 @@ namespace Verivox.Service
                     descriptor.Installed = false;
                     descriptor.ShowInPluginsList = true;
                 }
-                catch (Exception exception)
+                catch (Exception)
                 {
                 }
             }

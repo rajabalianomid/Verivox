@@ -11,8 +11,8 @@ namespace Verivox.Plugin.ProductConditions.Advance
 {
     public class ConditionProcessor : BasePlugin, IIntegratedMethod<List<ProductResult>, ProductSearch>
     {
-        private IConditionService _conditionService;
-        private ConditionContext _objectContext;
+        private readonly IConditionService _conditionService;
+        private readonly ConditionContext _objectContext;
         public ConditionProcessor(IConditionService conditionService, ConditionContext objectContext)
         {
             _conditionService = conditionService;
@@ -20,7 +20,7 @@ namespace Verivox.Plugin.ProductConditions.Advance
         }
         public List<ProductResult> ProcessIntegrated(ProductSearch processRequest)
         {
-            var task = Task.Run(async () => await _conditionService.GetProduct(processRequest)).ConfigureAwait(false);
+            System.Runtime.CompilerServices.ConfiguredTaskAwaitable<List<ProductResult>> task = Task.Run(async () => await _conditionService.GetProduct(processRequest)).ConfigureAwait(false);
             return task.GetAwaiter().GetResult();
         }
 

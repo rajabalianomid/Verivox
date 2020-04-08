@@ -17,14 +17,14 @@ namespace Verivox.Service.API.Controllers
 
         public PluginController(IPluginService pluginService, IWebHelper webHelper)
         {
-            this._pluginService = pluginService;
+            _pluginService = pluginService;
         }
 
         [HttpGet]
         [ProducesResponseType(typeof(IEnumerable<Plugin>), (int)HttpStatusCode.OK)]
         public IActionResult GetAll()
         {
-            var model = new CommonResponse<PluginCollection>();
+            CommonResponse<PluginCollection> model = new CommonResponse<PluginCollection>();
             try
             {
                 model.Result = new PluginCollection
@@ -50,21 +50,29 @@ namespace Verivox.Service.API.Controllers
         [ProducesResponseType(typeof(IEnumerable<Plugin>), (int)HttpStatusCode.OK)]
         public IActionResult Install(Plugin data)
         {
-            var pluginDescriptor = _pluginService.GetPluginDescriptorBySystemName<IPlugin>(data.Name);
+            PluginDescriptor pluginDescriptor = _pluginService.GetPluginDescriptorBySystemName<IPlugin>(data.Name);
             if (pluginDescriptor == null)
+            {
                 return GetAll();
+            }
 
             if (data.Installed)
             {
                 if (pluginDescriptor.Installed)
+                {
                     return GetAll();
+                }
+
                 _pluginService.PreparePluginToInstall(data.Name);
                 _pluginService.InstallPlugins();
             }
             else
             {
                 if (!pluginDescriptor.Installed)
+                {
                     return GetAll();
+                }
+
                 _pluginService.PreparePluginToUninstall(data.Name);
                 _pluginService.UninstallPlugins();
             }

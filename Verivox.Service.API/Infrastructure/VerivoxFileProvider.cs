@@ -20,9 +20,11 @@ namespace Verivox.Service.API
         public VerivoxFileProvider(IWebHostEnvironment hostingEnvironment)
             : base(File.Exists(hostingEnvironment.ContentRootPath) ? Path.GetDirectoryName(hostingEnvironment.ContentRootPath) : hostingEnvironment.ContentRootPath)
         {
-            var path = hostingEnvironment.ContentRootPath ?? string.Empty;
+            string path = hostingEnvironment.ContentRootPath ?? string.Empty;
             if (File.Exists(path))
+            {
                 path = Path.GetDirectoryName(path);
+            }
 
             BaseDirectory = path;
         }
@@ -33,7 +35,7 @@ namespace Verivox.Service.API
         {
             Directory.Delete(path, true);
             const int maxIterationToWait = 10;
-            var curIteration = 0;
+            int curIteration = 0;
 
             //according to the documentation(https://msdn.microsoft.com/ru-ru/library/windows/desktop/aa365488.aspx) 
             //System.IO.Directory.Delete method ultimately (after removing the files) calls native 
@@ -43,7 +45,10 @@ namespace Verivox.Service.API
             {
                 curIteration += 1;
                 if (curIteration > maxIterationToWait)
+                {
                     return;
+                }
+
                 Thread.Sleep(100);
             }
         }
@@ -67,7 +72,9 @@ namespace Verivox.Service.API
         public virtual void CreateDirectory(string path)
         {
             if (!DirectoryExists(path))
+            {
                 Directory.CreateDirectory(path);
+            }
         }
 
         /// <summary>
@@ -77,7 +84,9 @@ namespace Verivox.Service.API
         public virtual void CreateFile(string path)
         {
             if (FileExists(path))
+            {
                 return;
+            }
 
             //we use 'using' to close the file after it's created
             using (File.Create(path))
@@ -92,12 +101,14 @@ namespace Verivox.Service.API
         public void DeleteDirectory(string path)
         {
             if (string.IsNullOrEmpty(path))
+            {
                 throw new ArgumentNullException(path);
+            }
 
             //find more info about directory deletion
             //and why we use this approach at https://stackoverflow.com/questions/329355/cannot-delete-directory-with-directory-deletepath-true
 
-            foreach (var directory in Directory.GetDirectories(path))
+            foreach (string directory in Directory.GetDirectories(path))
             {
                 DeleteDirectory(directory);
             }
@@ -123,7 +134,9 @@ namespace Verivox.Service.API
         public virtual void DeleteFile(string filePath)
         {
             if (!FileExists(filePath))
+            {
                 return;
+            }
 
             File.Delete(filePath);
         }
@@ -211,7 +224,9 @@ namespace Verivox.Service.API
         public virtual long FileLength(string path)
         {
             if (!FileExists(path))
+            {
                 return -1;
+            }
 
             return new FileInfo(path).Length;
         }
@@ -233,7 +248,7 @@ namespace Verivox.Service.API
         /// <returns>The absolute path to the directory</returns>
         public virtual string GetAbsolutePath(params string[] paths)
         {
-            var allPaths = paths.ToList();
+            List<string> allPaths = paths.ToList();
             allPaths.Insert(0, Root);
 
             return Path.Combine(allPaths.ToArray());
@@ -283,7 +298,9 @@ namespace Verivox.Service.API
         public virtual string[] GetDirectories(string path, string searchPattern = "", bool topDirectoryOnly = true)
         {
             if (string.IsNullOrEmpty(searchPattern))
+            {
                 searchPattern = "*";
+            }
 
             return Directory.GetDirectories(path, searchPattern,
                 topDirectoryOnly ? SearchOption.TopDirectoryOnly : SearchOption.AllDirectories);
@@ -363,7 +380,9 @@ namespace Verivox.Service.API
         public virtual string[] GetFiles(string directoryPath, string searchPattern = "", bool topDirectoryOnly = true)
         {
             if (string.IsNullOrEmpty(searchPattern))
+            {
                 searchPattern = "*.*";
+            }
 
             return Directory.GetFiles(directoryPath, searchPattern,
                 topDirectoryOnly ? SearchOption.TopDirectoryOnly : SearchOption.AllDirectories);

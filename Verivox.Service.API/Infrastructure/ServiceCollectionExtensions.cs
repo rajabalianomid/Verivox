@@ -14,18 +14,18 @@ namespace Verivox.Service.API.Infrastructure
         public static IServiceProvider ConfigureApplicationServices(this IServiceCollection services, IConfiguration configuration, IWebHostEnvironment hostingEnvironment)
         {
             //add Config configuration parameters
-            var config = services.ConfigureStartupConfig<VerivoxConfig>(configuration.GetSection("Verivox"));
+            VerivoxConfig config = services.ConfigureStartupConfig<VerivoxConfig>(configuration.GetSection("Verivox"));
             //add accessor to HttpContext
             services.AddHttpContextAccessor();
 
             CommonHelper.DefaultFileProvider = new VerivoxFileProvider(hostingEnvironment);
 
-            var mvcCoreBuilder = services.AddMvcCore();
+            IMvcCoreBuilder mvcCoreBuilder = services.AddMvcCore();
             mvcCoreBuilder.PartManager.InitializePlugins(config);
 
             //create, initialize and configure the engine
-            var engine = EngineContext.Create();
-            var serviceProvider = engine.ConfigureServices(services, configuration);
+            IEngine engine = EngineContext.Create();
+            IServiceProvider serviceProvider = engine.ConfigureServices(services, configuration);
             SqlServerDataProvider.InitializeDatabase(config.DataConnectionString);
 
             engine.Resolve<IPluginService>().InstallPlugins();
@@ -35,13 +35,17 @@ namespace Verivox.Service.API.Infrastructure
         public static TConfig ConfigureStartupConfig<TConfig>(this IServiceCollection services, IConfiguration configuration) where TConfig : class, new()
         {
             if (services == null)
+            {
                 throw new ArgumentNullException(nameof(services));
+            }
 
             if (configuration == null)
+            {
                 throw new ArgumentNullException(nameof(configuration));
+            }
 
             //create instance of config
-            var config = new TConfig();
+            TConfig config = new TConfig();
 
             //bind it to the appropriate section of configuration
             configuration.Bind(config);
@@ -55,8 +59,8 @@ namespace Verivox.Service.API.Infrastructure
         {
             services.AddDbContext<Context>(optionsBuilder =>
             {
-                var VerivoxConfig = services.BuildServiceProvider().GetRequiredService<VerivoxConfig>();
-                var dbContextOptionsBuilder = optionsBuilder.UseLazyLoadingProxies();
+                VerivoxConfig VerivoxConfig = services.BuildServiceProvider().GetRequiredService<VerivoxConfig>();
+                DbContextOptionsBuilder dbContextOptionsBuilder = optionsBuilder.UseLazyLoadingProxies();
                 dbContextOptionsBuilder.UseSqlServer(VerivoxConfig.DataConnectionString);
             });
         }

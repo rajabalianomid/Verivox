@@ -39,7 +39,7 @@ namespace Verivox.Common
         /// <returns></returns>
         public static string EnsureSubscriberEmailOrThrow(string email)
         {
-            var output = EnsureNotNull(email);
+            string output = EnsureNotNull(email);
             output = output.Trim();
             output = EnsureMaximumLength(output, 255);
 
@@ -59,7 +59,9 @@ namespace Verivox.Common
         public static bool IsValidEmail(string email)
         {
             if (string.IsNullOrEmpty(email))
+            {
                 return false;
+            }
 
             email = email.Trim();
 
@@ -83,10 +85,13 @@ namespace Verivox.Common
         /// <returns>Result string</returns>
         public static string GenerateRandomDigitCode(int length)
         {
-            var random = new Random();
-            var str = string.Empty;
-            for (var i = 0; i < length; i++)
+            Random random = new Random();
+            string str = string.Empty;
+            for (int i = 0; i < length; i++)
+            {
                 str = string.Concat(str, random.Next(10).ToString());
+            }
+
             return str;
         }
 
@@ -98,7 +103,7 @@ namespace Verivox.Common
         /// <returns>Result</returns>
         public static int GenerateRandomInteger(int min = 0, int max = int.MaxValue)
         {
-            var randomNumberBuffer = new byte[10];
+            byte[] randomNumberBuffer = new byte[10];
             new RNGCryptoServiceProvider().GetBytes(randomNumberBuffer);
             return new Random(BitConverter.ToInt32(randomNumberBuffer, 0)).Next(min, max);
         }
@@ -113,14 +118,18 @@ namespace Verivox.Common
         public static string EnsureMaximumLength(string str, int maxLength, string postfix = null)
         {
             if (string.IsNullOrEmpty(str))
+            {
                 return str;
+            }
 
             if (str.Length <= maxLength)
+            {
                 return str;
+            }
 
-            var pLen = postfix?.Length ?? 0;
+            int pLen = postfix?.Length ?? 0;
 
-            var result = str.Substring(0, maxLength - pLen);
+            string result = str.Substring(0, maxLength - pLen);
             if (!string.IsNullOrEmpty(postfix))
             {
                 result += postfix;
@@ -170,15 +179,21 @@ namespace Verivox.Common
         {
             //also see Enumerable.SequenceEqual(a1, a2);
             if (ReferenceEquals(a1, a2))
+            {
                 return true;
+            }
 
             if (a1 == null || a2 == null)
+            {
                 return false;
+            }
 
             if (a1.Length != a2.Length)
+            {
                 return false;
+            }
 
-            var comparer = EqualityComparer<T>.Default;
+            EqualityComparer<T> comparer = EqualityComparer<T>.Default;
             return !a1.Where((t, i) => !comparer.Equals(t, a2[i])).Any();
         }
 
@@ -190,17 +205,33 @@ namespace Verivox.Common
         /// <param name="value">The value to set the property to.</param>
         public static void SetProperty(object instance, string propertyName, object value)
         {
-            if (instance == null) throw new ArgumentNullException(nameof(instance));
-            if (propertyName == null) throw new ArgumentNullException(nameof(propertyName));
+            if (instance == null)
+            {
+                throw new ArgumentNullException(nameof(instance));
+            }
 
-            var instanceType = instance.GetType();
-            var pi = instanceType.GetProperty(propertyName);
+            if (propertyName == null)
+            {
+                throw new ArgumentNullException(nameof(propertyName));
+            }
+
+            Type instanceType = instance.GetType();
+            PropertyInfo pi = instanceType.GetProperty(propertyName);
             if (pi == null)
+            {
                 throw new VerivoxException("No property '{0}' found on the instance of type '{1}'.", propertyName, instanceType);
+            }
+
             if (!pi.CanWrite)
+            {
                 throw new VerivoxException("The property '{0}' on the instance of type '{1}' does not have a setter.", propertyName, instanceType);
+            }
+
             if (value != null && !value.GetType().IsAssignableFrom(pi.PropertyType))
+            {
                 value = To(value, pi.PropertyType);
+            }
+
             pi.SetValue(instance, value, new object[0]);
         }
 
@@ -225,23 +256,33 @@ namespace Verivox.Common
         public static object To(object value, Type destinationType, CultureInfo culture)
         {
             if (value == null)
+            {
                 return null;
+            }
 
-            var sourceType = value.GetType();
+            Type sourceType = value.GetType();
 
-            var destinationConverter = TypeDescriptor.GetConverter(destinationType);
+            TypeConverter destinationConverter = TypeDescriptor.GetConverter(destinationType);
             if (destinationConverter.CanConvertFrom(value.GetType()))
+            {
                 return destinationConverter.ConvertFrom(null, culture, value);
+            }
 
-            var sourceConverter = TypeDescriptor.GetConverter(sourceType);
+            TypeConverter sourceConverter = TypeDescriptor.GetConverter(sourceType);
             if (sourceConverter.CanConvertTo(destinationType))
+            {
                 return sourceConverter.ConvertTo(null, culture, value, destinationType);
+            }
 
             if (destinationType.IsEnum && value is int)
+            {
                 return Enum.ToObject(destinationType, (int)value);
+            }
 
             if (!destinationType.IsInstanceOfType(value))
+            {
                 return Convert.ChangeType(value, destinationType, culture);
+            }
 
             return value;
         }
@@ -265,13 +306,23 @@ namespace Verivox.Common
         /// <returns>Converted string</returns>
         public static string ConvertEnum(string str)
         {
-            if (string.IsNullOrEmpty(str)) return string.Empty;
-            var result = string.Empty;
-            foreach (var c in str)
+            if (string.IsNullOrEmpty(str))
+            {
+                return string.Empty;
+            }
+
+            string result = string.Empty;
+            foreach (char c in str)
+            {
                 if (c.ToString() != c.ToString().ToLower())
+                {
                     result += " " + c.ToString();
+                }
                 else
+                {
                     result += c.ToString();
+                }
+            }
 
             //ensure no spaces (e.g. when the first letter is upper case)
             result = result.TrimStart();
@@ -285,7 +336,7 @@ namespace Verivox.Common
         {
             //little hack here
             //always set culture to 'en-US' (Kendo UI has a bug related to editing decimal values in other cultures)
-            var culture = new CultureInfo("en-US");
+            CultureInfo culture = new CultureInfo("en-US");
             CultureInfo.CurrentCulture = culture;
             CultureInfo.CurrentUICulture = culture;
         }
@@ -300,9 +351,12 @@ namespace Verivox.Common
         {
             //source: http://stackoverflow.com/questions/9/how-do-i-calculate-someones-age-in-c
             //this assumes you are looking for the western idea of age and not using East Asian reckoning.
-            var age = endDate.Year - startDate.Year;
+            int age = endDate.Year - startDate.Year;
             if (startDate > endDate.AddYears(-age))
+            {
                 age--;
+            }
+
             return age;
         }
 
@@ -324,14 +378,17 @@ namespace Verivox.Common
                 throw new ArgumentException("fieldName", "The field name cannot be null or empty.");
             }
 
-            var t = target.GetType();
+            Type t = target.GetType();
             FieldInfo fi = null;
 
             while (t != null)
             {
                 fi = t.GetField(fieldName, BindingFlags.Instance | BindingFlags.NonPublic);
 
-                if (fi != null) break;
+                if (fi != null)
+                {
+                    break;
+                }
 
                 t = t.BaseType;
             }

@@ -39,12 +39,14 @@ namespace Verivox.Common.Plugins
         public virtual TPlugin Instance<TPlugin>() where TPlugin : class, IPlugin
         {
             //try to resolve plugin as unregistered service
-            var instance = EngineContext.Current.ResolveUnregistered(PluginType);
+            object instance = EngineContext.Current.ResolveUnregistered(PluginType);
 
             //try to get typed instance
-            var typedInstance = instance as TPlugin;
+            TPlugin typedInstance = instance as TPlugin;
             if (typedInstance != null)
+            {
                 typedInstance.PluginDescriptor = this;
+            }
 
             return typedInstance;
         }
@@ -57,7 +59,9 @@ namespace Verivox.Common.Plugins
         public int CompareTo(PluginDescriptor other)
         {
             if (DisplayOrder != other.DisplayOrder)
+            {
                 return DisplayOrder.CompareTo(other.DisplayOrder);
+            }
 
             return string.Compare(FriendlyName, other.FriendlyName, StringComparison.InvariantCultureIgnoreCase);
         }
@@ -95,18 +99,22 @@ namespace Verivox.Common.Plugins
         /// </summary>
         public virtual void Save()
         {
-            var fileProvider = EngineContext.Current.Resolve<IVerivoxFileProvider>();
+            IVerivoxFileProvider fileProvider = EngineContext.Current.Resolve<IVerivoxFileProvider>();
 
             //get the description file path
             if (OriginalAssemblyFile == null)
+            {
                 throw new Exception($"Cannot load original assembly path for {SystemName} plugin.");
+            }
 
-            var filePath = fileProvider.Combine(fileProvider.GetDirectoryName(OriginalAssemblyFile), VerivoxPluginDefaults.DescriptionFileName);
+            string filePath = fileProvider.Combine(fileProvider.GetDirectoryName(OriginalAssemblyFile), VerivoxPluginDefaults.DescriptionFileName);
             if (!fileProvider.FileExists(filePath))
+            {
                 throw new Exception($"Description file for {SystemName} plugin does not exist. {filePath}");
+            }
 
             //save the file
-            var text = JsonConvert.SerializeObject(this, Formatting.Indented);
+            string text = JsonConvert.SerializeObject(this, Formatting.Indented);
             fileProvider.WriteAllText(filePath, text, Encoding.UTF8);
         }
 
@@ -118,14 +126,18 @@ namespace Verivox.Common.Plugins
         public static PluginDescriptor GetPluginDescriptorFromText(string text)
         {
             if (string.IsNullOrEmpty(text))
+            {
                 return new PluginDescriptor();
+            }
 
             //get plugin descriptor from the JSON file
-            var descriptor = JsonConvert.DeserializeObject<PluginDescriptor>(text);
+            PluginDescriptor descriptor = JsonConvert.DeserializeObject<PluginDescriptor>(text);
 
             //nopCommerce 2.00 didn't have 'SupportedVersions' parameter, so let's set it to "2.00"
             if (!descriptor.SupportedVersions.Any())
+            {
                 descriptor.SupportedVersions.Add("2.00");
+            }
 
             return descriptor;
         }

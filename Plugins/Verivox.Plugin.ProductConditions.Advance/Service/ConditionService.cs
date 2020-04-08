@@ -11,12 +11,12 @@ namespace Verivox.Plugin.ProductConditions.Advance.Service
 {
     public class ConditionService : IConditionService
     {
-        private IRepository<AdvanceCondition> _conditionRepository;
-        private IRepository<Product> _productRepository;
+        private readonly IRepository<AdvanceCondition> _conditionRepository;
+        private readonly IRepository<Product> _productRepository;
         public ConditionService(IRepository<AdvanceCondition> conditionRepository, IRepository<Product> productRepository)
         {
-            this._conditionRepository = conditionRepository;
-            this._productRepository = productRepository;
+            _conditionRepository = conditionRepository;
+            _productRepository = productRepository;
         }
 
         public async Task<List<ProductResult>> GetProduct(ProductSearch productSearch)
@@ -24,9 +24,9 @@ namespace Verivox.Plugin.ProductConditions.Advance.Service
             return await Task.Run(() =>
             {
 
-                var conditions = _conditionRepository.Table.ToList();
-                var productIds = conditions.Select(s => s.ProductId);
-                var foundProductByConditions = _productRepository.Table.Where(w => productIds.Any(a => a == w.Id)).ToList();
+                List<AdvanceCondition> conditions = _conditionRepository.Table.ToList();
+                IEnumerable<int> productIds = conditions.Select(s => s.ProductId);
+                List<Product> foundProductByConditions = _productRepository.Table.Where(w => productIds.Any(a => a == w.Id)).ToList();
                 return conditions.Join(foundProductByConditions, condition => condition.ProductId, product => product.Id, (condition, product) => new { condition, product }).Select(s => new ProductResult
                 {
                     Id = s.condition.ProductId,

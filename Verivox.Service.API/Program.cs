@@ -8,7 +8,7 @@ namespace Verivox.Service.API
     {
         public static void Main(string[] args)
         {
-            var host = WebHost.CreateDefaultBuilder(args)
+            IWebHost host = WebHost.CreateDefaultBuilder(args)
                 //.UseKestrel(options => options.AddServerHeader = false)
                 .UseStartup<Startup>()
                 .Build();
@@ -16,11 +16,13 @@ namespace Verivox.Service.API
             host.Run();
         }
 
-        public static IHostBuilder CreateHostBuilder(string[] args) =>
-            Host.CreateDefaultBuilder(args)
-            .ConfigureWebHostDefaults(webBuilder =>
-            {
-                webBuilder.UseStartup<Startup>();
-            });
+        public static IHostBuilder CreateHostBuilder(string[] args)
+        {
+            return Host.CreateDefaultBuilder(args)
+.ConfigureWebHostDefaults(webBuilder =>
+{
+    webBuilder.UseStartup<Startup>();
+});
+        }
     }
 }

@@ -15,17 +15,17 @@ namespace Verivox.Data
         {
             CreateDatabase(conectionString);
 
-            var context = EngineContext.Current.Resolve<IDbContext>();
+            IDbContext context = EngineContext.Current.Resolve<IDbContext>();
 
-            var tableNamesToValidate = new List<string> { "ProductType", "Product" };
-            var existingTableNames = context
+            List<string> tableNamesToValidate = new List<string> { "ProductType", "Product" };
+            List<string> existingTableNames = context
                 .QueryFromSql<StringQueryType>("SELECT table_name AS Value FROM INFORMATION_SCHEMA.TABLES WHERE table_type = 'BASE TABLE'")
                 .Select(stringValue => stringValue.Value).ToList();
-            var createTables = !existingTableNames.Intersect(tableNamesToValidate, StringComparer.InvariantCultureIgnoreCase).Any();
+            bool createTables = !existingTableNames.Intersect(tableNamesToValidate, StringComparer.InvariantCultureIgnoreCase).Any();
             if (createTables)
             {
 
-                var fileProvider = EngineContext.Current.Resolve<IVerivoxFileProvider>();
+                IVerivoxFileProvider fileProvider = EngineContext.Current.Resolve<IVerivoxFileProvider>();
 
                 //create tables
                 //EngineContext.Current.Resolve<IRelationalDatabaseCreator>().CreateTables();
@@ -44,16 +44,16 @@ namespace Verivox.Data
                 try
                 {
                     //parse database name
-                    var builder = new SqlConnectionStringBuilder(connectionString);
-                    var databaseName = builder.InitialCatalog;
+                    SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder(connectionString);
+                    string databaseName = builder.InitialCatalog;
                     //now create connection string to 'master' dabatase. It always exists.
                     builder.InitialCatalog = "master";
-                    var masterCatalogConnectionString = builder.ToString();
-                    var query = $"CREATE DATABASE [{databaseName}]";
-                    using (var conn = new SqlConnection(masterCatalogConnectionString))
+                    string masterCatalogConnectionString = builder.ToString();
+                    string query = $"CREATE DATABASE [{databaseName}]";
+                    using (SqlConnection conn = new SqlConnection(masterCatalogConnectionString))
                     {
                         conn.Open();
-                        using (var command = new SqlCommand(query, conn))
+                        using (SqlCommand command = new SqlCommand(query, conn))
                         {
                             command.ExecuteNonQuery();
                         }
@@ -66,15 +66,21 @@ namespace Verivox.Data
                         //But we have already started creation of tables and sample data.
                         //As a result there is an exception thrown and the installation process cannot continue.
                         //That's why we are in a cycle of "triesToConnect" times trying to connect to a database with a delay of one second.
-                        for (var i = 0; i <= triesToConnect; i++)
+                        for (int i = 0; i <= triesToConnect; i++)
                         {
                             if (i == triesToConnect)
+                            {
                                 throw new Exception("Unable to connect to the new database. Please try one more time");
+                            }
 
                             if (!SqlServerDatabaseExists(connectionString))
+                            {
                                 Thread.Sleep(1000);
+                            }
                             else
+                            {
                                 break;
+                            }
                         }
                     }
                 }
@@ -89,7 +95,7 @@ namespace Verivox.Data
             try
             {
                 //just try to connect
-                using (var conn = new SqlConnection(connectionString))
+                using (SqlConnection conn = new SqlConnection(connectionString))
                 {
                     conn.Open();
                 }

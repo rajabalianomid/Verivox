@@ -10,18 +10,18 @@
 
         public TEntity Data { get; private set; }
 
-        public bool Next { get { return PageIndex < (PageCount); } }
+        public bool Next => PageIndex < (PageCount);
 
-        public bool Previous { get { return PageIndex > 0; } }
+        public bool Previous => PageIndex > 0;
 
-        public int PageCount { get { return PageSize > 0 ? (Count / PageSize) : 0; } }
+        public int PageCount => PageSize > 0 ? (Count / PageSize) : 0;
 
         public Pagination(int pageIndex, int pageSize, int count, TEntity data)
         {
-            this.PageIndex = pageIndex;
-            this.PageSize = pageSize;
-            this.Count = count;
-            this.Data = data;
+            PageIndex = pageIndex;
+            PageSize = pageSize;
+            Count = count;
+            Data = data;
         }
     }
 }

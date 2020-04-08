@@ -22,9 +22,9 @@ namespace Verivox.Service.API.Test
         [Fact]
         public async Task home_controller_test_should_return_string_content()
         {
-            var response = await _client.GetAsync("api/Home");
+            HttpResponseMessage response = await _client.GetAsync("api/Home");
             response.EnsureSuccessStatusCode();
-            var content = await response.Content.ReadAsStringAsync();
+            string content = await response.Content.ReadAsStringAsync();
             Assert.Equal("API Is Up", content);
         }
     }

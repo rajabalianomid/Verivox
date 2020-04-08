@@ -46,7 +46,7 @@ namespace Verivox.Service.API.Infrastructure.Extensions
             }
 
             //get all libraries from refs directory
-            var refsPathName = _fileProvider.Combine(Environment.CurrentDirectory, VerivoxPluginDefaults.RefsPathName);
+            string refsPathName = _fileProvider.Combine(Environment.CurrentDirectory, VerivoxPluginDefaults.RefsPathName);
             if (_fileProvider.DirectoryExists(refsPathName))
             {
                 _baseAppLibraries.AddRange(_fileProvider.GetFiles(refsPathName, "*.dll")
@@ -76,7 +76,9 @@ namespace Verivox.Service.API.Infrastructure.Extensions
             PluginsInfo = new PluginsInfo(_fileProvider);
 
             if (PluginsInfo.LoadPluginInfo())
+            {
                 return;
+            }
 
             PluginsInfo.Save();
         }
@@ -91,13 +93,13 @@ namespace Verivox.Service.API.Infrastructure.Extensions
         private static string ShadowCopyFile(IVerivoxFileProvider fileProvider, string assemblyFile, string shadowCopyDirectory)
         {
             //get path to the new shadow copied file
-            var shadowCopiedFile = fileProvider.Combine(shadowCopyDirectory, fileProvider.GetFileName(assemblyFile));
+            string shadowCopiedFile = fileProvider.Combine(shadowCopyDirectory, fileProvider.GetFileName(assemblyFile));
 
             //check if a shadow copied file already exists and if it does
             if (fileProvider.FileExists(shadowCopiedFile))
             {
                 //it exists, then check if it's updated (compare creation time of files)
-                var areFilesIdentical = fileProvider.GetCreationTime(shadowCopiedFile).ToUniversalTime().Ticks >=
+                bool areFilesIdentical = fileProvider.GetCreationTime(shadowCopiedFile).ToUniversalTime().Ticks >=
                     fileProvider.GetCreationTime(assemblyFile).ToUniversalTime().Ticks;
                 if (areFilesIdentical)
                 {
@@ -122,7 +124,7 @@ namespace Verivox.Service.API.Infrastructure.Extensions
                 //which releases the lock, so that it what we are doing here, once it's renamed, we can re-shadow copy
                 try
                 {
-                    var oldFile = $"{shadowCopiedFile}{Guid.NewGuid():N}.old";
+                    string oldFile = $"{shadowCopiedFile}{Guid.NewGuid():N}.old";
                     fileProvider.FileMove(shadowCopiedFile, oldFile);
                 }
                 catch (IOException exception)
@@ -166,7 +168,9 @@ namespace Verivox.Service.API.Infrastructure.Extensions
                     assembly = Assembly.UnsafeLoadFrom(assemblyFile);
                 }
                 else
+                {
                     throw;
+                }
             }
 
             //register the plugin definition
@@ -196,7 +200,7 @@ namespace Verivox.Service.API.Infrastructure.Extensions
             //whether to copy plugins assemblies to the bin directory, if not load assembly from the original file
             if (!config.UsePluginsShadowCopy)
             {
-                var assembly = AddApplicationParts(applicationPartManager, assemblyFile, config.UseUnsafeLoadAssembly);
+                Assembly assembly = AddApplicationParts(applicationPartManager, assemblyFile, config.UseUnsafeLoadAssembly);
 
                 // delete the .deps file
                 if (assemblyFile.EndsWith(".dll"))
@@ -209,7 +213,7 @@ namespace Verivox.Service.API.Infrastructure.Extensions
 
             //or try to shadow copy first
             fileProvider.CreateDirectory(shadowCopyDirectory);
-            var shadowCopiedFile = ShadowCopyFile(fileProvider, assemblyFile, shadowCopyDirectory);
+            string shadowCopiedFile = ShadowCopyFile(fileProvider, assemblyFile, shadowCopyDirectory);
 
             Assembly shadowCopiedAssembly = null;
             try
@@ -237,10 +241,12 @@ namespace Verivox.Service.API.Infrastructure.Extensions
             }
 
             if (shadowCopiedAssembly != null)
+            {
                 return shadowCopiedAssembly;
+            }
 
             //shadow copy assembly wasn't loaded for some reason, so trying to load again from the reserve directory
-            var reserveDirectory = fileProvider.Combine(fileProvider.MapPath(VerivoxPluginDefaults.ShadowCopyPath),
+            string reserveDirectory = fileProvider.Combine(fileProvider.MapPath(VerivoxPluginDefaults.ShadowCopyPath),
                 $"{VerivoxPluginDefaults.ReserveShadowCopyPathName}{DateTime.Now.ToFileTimeUtc()}");
 
             return PerformFileDeploy(applicationPartManager, assemblyFile, reserveDirectory, config, fileProvider);
@@ -254,23 +260,27 @@ namespace Verivox.Service.API.Infrastructure.Extensions
         private static IList<(string DescriptionFile, PluginDescriptor PluginDescriptor)> GetDescriptionFilesAndDescriptors(string directoryName)
         {
             if (string.IsNullOrEmpty(directoryName))
+            {
                 throw new ArgumentNullException(nameof(directoryName));
+            }
 
-            var result = new List<(string DescriptionFile, PluginDescriptor PluginDescriptor)>();
+            List<(string DescriptionFile, PluginDescriptor PluginDescriptor)> result = new List<(string DescriptionFile, PluginDescriptor PluginDescriptor)>();
 
             //try to find description files in the plugin directory
-            var files = _fileProvider.GetFiles(directoryName, VerivoxPluginDefaults.DescriptionFileName, false);
+            string[] files = _fileProvider.GetFiles(directoryName, VerivoxPluginDefaults.DescriptionFileName, false);
 
             //populate result list
-            foreach (var descriptionFile in files)
+            foreach (string descriptionFile in files)
             {
                 //skip files that are not in the plugin directory
                 if (!IsPluginDirectory(_fileProvider.GetDirectoryName(descriptionFile)))
+                {
                     continue;
+                }
 
                 //load plugin descriptor from the file
-                var text = _fileProvider.ReadAllText(descriptionFile, Encoding.UTF8);
-                var pluginDescriptor = PluginDescriptor.GetPluginDescriptorFromText(text);
+                string text = _fileProvider.ReadAllText(descriptionFile, Encoding.UTF8);
+                PluginDescriptor pluginDescriptor = PluginDescriptor.GetPluginDescriptorFromText(text);
 
                 result.Add((descriptionFile, pluginDescriptor));
             }
@@ -292,23 +302,29 @@ namespace Verivox.Service.API.Infrastructure.Extensions
         {
             //ignore already loaded libraries
             //(we do it because not all libraries are loaded immediately after application start)
-            var fileName = _fileProvider.GetFileName(filePath);
+            string fileName = _fileProvider.GetFileName(filePath);
             if (_baseAppLibraries.Any(library => library.Equals(fileName, StringComparison.InvariantCultureIgnoreCase)))
+            {
                 return true;
+            }
 
             try
             {
                 //get filename without extension
-                var fileNameWithoutExtension = _fileProvider.GetFileNameWithoutExtension(filePath);
+                string fileNameWithoutExtension = _fileProvider.GetFileNameWithoutExtension(filePath);
                 if (string.IsNullOrEmpty(fileNameWithoutExtension))
+                {
                     throw new Exception($"Cannot get file extension for {fileName}");
+                }
 
-                foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
+                foreach (Assembly assembly in AppDomain.CurrentDomain.GetAssemblies())
                 {
                     //compare assemblies by filenames
-                    var assemblyName = assembly.FullName.Split(',').FirstOrDefault();
+                    string assemblyName = assembly.FullName.Split(',').FirstOrDefault();
                     if (!fileNameWithoutExtension.Equals(assemblyName, StringComparison.InvariantCultureIgnoreCase))
+                    {
                         continue;
+                    }
 
                     //loaded assembly not found
                     if (!_loadedAssemblies.ContainsKey(assemblyName))
@@ -340,16 +356,22 @@ namespace Verivox.Service.API.Infrastructure.Extensions
         private static bool IsPluginDirectory(string directoryName)
         {
             if (string.IsNullOrEmpty(directoryName))
+            {
                 return false;
+            }
 
             //get parent directory
-            var parent = _fileProvider.GetParentDirectory(directoryName);
+            string parent = _fileProvider.GetParentDirectory(directoryName);
             if (string.IsNullOrEmpty(parent))
+            {
                 return false;
+            }
 
             //directory is directly in plugins directory
             if (!_fileProvider.GetDirectoryNameOnly(parent).Equals(VerivoxPluginDefaults.PathName, StringComparison.InvariantCultureIgnoreCase))
+            {
                 return false;
+            }
 
             return true;
         }
@@ -366,45 +388,49 @@ namespace Verivox.Service.API.Infrastructure.Extensions
         public static void InitializePlugins(this ApplicationPartManager applicationPartManager, VerivoxConfig config)
         {
             if (applicationPartManager == null)
+            {
                 throw new ArgumentNullException(nameof(applicationPartManager));
+            }
 
             if (config == null)
+            {
                 throw new ArgumentNullException(nameof(config));
+            }
 
             LoadPluginsInfo(config);
 
             //perform with locked access to resources
             using (new ReaderWriteLockDisposable(_locker))
             {
-                var pluginDescriptors = new List<PluginDescriptor>();
-                var incompatiblePlugins = new List<string>();
+                List<PluginDescriptor> pluginDescriptors = new List<PluginDescriptor>();
+                List<string> incompatiblePlugins = new List<string>();
 
                 try
                 {
                     //ensure plugins directory and directory for shadow copies are created
-                    var pluginsDirectory = _fileProvider.MapPath(VerivoxPluginDefaults.Path);
+                    string pluginsDirectory = _fileProvider.MapPath(VerivoxPluginDefaults.Path);
                     _fileProvider.CreateDirectory(pluginsDirectory);
 
-                    var shadowCopyDirectory = _fileProvider.MapPath(VerivoxPluginDefaults.ShadowCopyPath);
+                    string shadowCopyDirectory = _fileProvider.MapPath(VerivoxPluginDefaults.ShadowCopyPath);
                     _fileProvider.CreateDirectory(shadowCopyDirectory);
 
                     //get list of all files in bin directory
-                    var binFiles = _fileProvider.GetFiles(shadowCopyDirectory, "*", false);
+                    string[] binFiles = _fileProvider.GetFiles(shadowCopyDirectory, "*", false);
 
                     //whether to clear shadow copied files
                     if (config.ClearPluginShadowDirectoryOnStartup)
                     {
                         //skip placeholder files
-                        var placeholderFileNames = new List<string> { "placeholder.txt", "index.htm" };
+                        List<string> placeholderFileNames = new List<string> { "placeholder.txt", "index.htm" };
                         binFiles = binFiles.Where(file =>
                         {
-                            var fileName = _fileProvider.GetFileName(file);
+                            string fileName = _fileProvider.GetFileName(file);
                             return !placeholderFileNames.Any(placeholderFileName => placeholderFileName
                                 .Equals(fileName, StringComparison.InvariantCultureIgnoreCase));
                         }).ToArray();
 
                         //clear out directory
-                        foreach (var file in binFiles)
+                        foreach (string file in binFiles)
                         {
                             try
                             {
@@ -417,9 +443,9 @@ namespace Verivox.Service.API.Infrastructure.Extensions
                         }
 
                         //delete all reserve directories
-                        var reserveDirectories = _fileProvider
+                        string[] reserveDirectories = _fileProvider
                             .GetDirectories(shadowCopyDirectory, VerivoxPluginDefaults.ReserveShadowCopyPathNamePattern);
-                        foreach (var directory in reserveDirectories)
+                        foreach (string directory in reserveDirectories)
                         {
                             try
                             {
@@ -433,10 +459,10 @@ namespace Verivox.Service.API.Infrastructure.Extensions
                     }
 
                     //load plugin descriptors from the plugin directory
-                    foreach (var item in GetDescriptionFilesAndDescriptors(pluginsDirectory))
+                    foreach ((string DescriptionFile, PluginDescriptor PluginDescriptor) item in GetDescriptionFilesAndDescriptors(pluginsDirectory))
                     {
-                        var descriptionFile = item.DescriptionFile;
-                        var pluginDescriptor = item.PluginDescriptor;
+                        string descriptionFile = item.DescriptionFile;
+                        PluginDescriptor pluginDescriptor = item.PluginDescriptor;
 
                         //ensure that plugin is compatible with the current version
                         if (!pluginDescriptor.SupportedVersions.Contains(VerivoxVersion.CurrentVersion, StringComparer.InvariantCultureIgnoreCase))
@@ -452,7 +478,9 @@ namespace Verivox.Service.API.Infrastructure.Extensions
                         }
 
                         if (pluginDescriptors.Contains(pluginDescriptor))
+                        {
                             throw new Exception($"A plugin with '{pluginDescriptor.SystemName}' system name is already defined");
+                        }
 
                         //set 'Installed' property
                         pluginDescriptor.Installed = PluginsInfo.InstalledPluginNames
@@ -461,21 +489,21 @@ namespace Verivox.Service.API.Infrastructure.Extensions
                         try
                         {
                             //try to get plugin directory
-                            var pluginDirectory = _fileProvider.GetDirectoryName(descriptionFile);
+                            string pluginDirectory = _fileProvider.GetDirectoryName(descriptionFile);
                             if (string.IsNullOrEmpty(pluginDirectory))
                             {
                                 throw new Exception($"Directory cannot be resolved for '{_fileProvider.GetFileName(descriptionFile)}' description file");
                             }
 
                             //get list of all library files in the plugin directory (not in the bin one)
-                            var pluginFiles = _fileProvider.GetFiles(pluginDirectory, "*.dll", false)
+                            List<string> pluginFiles = _fileProvider.GetFiles(pluginDirectory, "*.dll", false)
                                 .Where(file => !binFiles.Contains(file) && IsPluginDirectory(_fileProvider.GetDirectoryName(file)))
                                 .ToList();
 
                             //try to find a main plugin assembly file
-                            var mainPluginFile = pluginFiles.FirstOrDefault(file =>
+                            string mainPluginFile = pluginFiles.FirstOrDefault(file =>
                             {
-                                var fileName = _fileProvider.GetFileName(file);
+                                string fileName = _fileProvider.GetFileName(file);
                                 return fileName.Equals(pluginDescriptor.AssemblyFileName, StringComparison.InvariantCultureIgnoreCase);
                             });
 
@@ -487,13 +515,13 @@ namespace Verivox.Service.API.Infrastructure.Extensions
                                 continue;
                             }
 
-                            var pluginName = pluginDescriptor.SystemName;
+                            string pluginName = pluginDescriptor.SystemName;
 
                             //if it's found, set it as original assembly file
                             pluginDescriptor.OriginalAssemblyFile = mainPluginFile;
 
                             //need to deploy if plugin is already installed
-                            var needToDeploy = PluginsInfo.InstalledPluginNames.Contains(pluginName);
+                            bool needToDeploy = PluginsInfo.InstalledPluginNames.Contains(pluginName);
 
                             //also, deploy if the plugin is only going to be installed now
                             needToDeploy = needToDeploy || PluginsInfo.PluginNamesToInstall.Any(pluginInfo => pluginInfo.Equals(pluginName));
@@ -508,24 +536,28 @@ namespace Verivox.Service.API.Infrastructure.Extensions
                             pluginDescriptor.ReferencedAssembly = applicationPartManager.PerformFileDeploy(mainPluginFile, shadowCopyDirectory, config, _fileProvider);
 
                             //and then deploy all other referenced assemblies
-                            var filesToDeploy = pluginFiles.Where(file =>
+                            List<string> filesToDeploy = pluginFiles.Where(file =>
                                 !_fileProvider.GetFileName(file).Equals(_fileProvider.GetFileName(mainPluginFile)) &&
                                 !IsAlreadyLoaded(file, pluginName)).ToList();
-                            foreach (var file in filesToDeploy)
+                            foreach (string file in filesToDeploy)
                             {
                                 applicationPartManager.PerformFileDeploy(file, shadowCopyDirectory, config, _fileProvider);
                             }
 
                             //determine a plugin type (only one plugin per assembly is allowed)
-                            var pluginType = pluginDescriptor.ReferencedAssembly.GetTypes().FirstOrDefault(type =>
+                            Type pluginType = pluginDescriptor.ReferencedAssembly.GetTypes().FirstOrDefault(type =>
                                 typeof(IPlugin).IsAssignableFrom(type) && !type.IsInterface && type.IsClass && !type.IsAbstract);
                             if (pluginType != default(Type))
+                            {
                                 pluginDescriptor.PluginType = pluginType;
+                            }
                             //}
 
                             //skip descriptor of plugin that is going to be deleted
                             if (PluginsInfo.PluginNamesToDelete.Contains(pluginName))
+                            {
                                 continue;
+                            }
 
                             //mark plugin as successfully deployed
                             pluginDescriptors.Add(pluginDescriptor);
@@ -533,7 +565,7 @@ namespace Verivox.Service.API.Infrastructure.Extensions
                         catch (ReflectionTypeLoadException exception)
                         {
                             //get all loader exceptions
-                            var error = exception.LoaderExceptions.Aggregate($"Plugin '{pluginDescriptor.FriendlyName}'. ",
+                            string error = exception.LoaderExceptions.Aggregate($"Plugin '{pluginDescriptor.FriendlyName}'. ",
                                 (message, nextMessage) => $"{message}{nextMessage.Message}{Environment.NewLine}");
 
                             throw new Exception(error, exception);
@@ -548,9 +580,11 @@ namespace Verivox.Service.API.Infrastructure.Extensions
                 catch (Exception exception)
                 {
                     //throw full exception
-                    var message = string.Empty;
-                    for (var inner = exception; inner != null; inner = inner.InnerException)
+                    string message = string.Empty;
+                    for (Exception inner = exception; inner != null; inner = inner.InnerException)
+                    {
                         message = $"{message}{inner.Message}{Environment.NewLine}";
+                    }
 
                     throw new Exception(message, exception);
                 }

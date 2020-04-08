@@ -47,10 +47,12 @@ namespace Verivox.Common
         public override IList<Assembly> GetAssemblies()
         {
             if (!EnsureBinFolderAssembliesLoaded || _binFolderAssembliesLoaded)
+            {
                 return base.GetAssemblies();
+            }
 
             _binFolderAssembliesLoaded = true;
-            var binPath = GetBinDirectory();
+            string binPath = GetBinDirectory();
             //binPath = _webHelper.MapPath("~/bin");
             LoadMatchingAssemblies(binPath);
 

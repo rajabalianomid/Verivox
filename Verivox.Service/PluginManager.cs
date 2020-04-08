@@ -11,7 +11,7 @@ namespace Verivox.Service
     /// <typeparam name="TPlugin">Type of plugin</typeparam>
     public partial class PluginManager<TPlugin> where TPlugin : class, IPlugin
     {
-        IPluginService _pluginService;
+        private readonly IPluginService _pluginService;
         public PluginManager(IPluginService pluginService)
         {
             _pluginService = pluginService;
@@ -22,7 +22,9 @@ namespace Verivox.Service
         protected IList<TPlugin> LoadAllPlugins(string group)
         {
             if (group == null)
+            {
                 return new List<TPlugin>();
+            }
 
             return _pluginService.GetPluginDescriptors<IPlugin>().ToList()
              .Where(w => w.Group.Equals(group, StringComparison.InvariantCultureIgnoreCase)).Select(descriptor => descriptor.Instance<TPlugin>())

@@ -26,7 +26,7 @@ namespace Verivox.Data
         public virtual void Configure(EntityTypeBuilder<TQuery> builder)
         {
             //add custom configuration
-            this.PostConfigure(builder);
+            PostConfigure(builder);
         }
 
         /// <summary>

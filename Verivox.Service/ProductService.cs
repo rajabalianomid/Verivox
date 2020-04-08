@@ -17,7 +17,7 @@ namespace Verivox.Service
             List<ProductResult> result = new List<ProductResult>();
             base.LoadAllPlugins(ServiceEnums.ConditionGroup.Electric.ToString()).ToList().ForEach(f =>
             {
-                var productResult = f.ProcessIntegrated(new ProductSearch
+                List<ProductResult> productResult = f.ProcessIntegrated(new ProductSearch
                 {
                     Consumption = model.Consumption
                 });

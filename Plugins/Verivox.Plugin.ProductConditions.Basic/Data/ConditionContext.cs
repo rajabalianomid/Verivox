@@ -39,9 +39,9 @@ namespace Verivox.Plugin.ProductConditions.Basic.Data
 
         public int ExecuteSqlCommand(string sql, bool doNotEnsureTransaction = false, int? timeout = null, params object[] parameters)
         {
-            using (var transaction = Database.BeginTransaction())
+            using (Microsoft.EntityFrameworkCore.Storage.IDbContextTransaction transaction = Database.BeginTransaction())
             {
-                var result = Database.ExecuteSqlRaw(sql, parameters);
+                int result = Database.ExecuteSqlRaw(sql, parameters);
                 transaction.Commit();
 
                 return result;

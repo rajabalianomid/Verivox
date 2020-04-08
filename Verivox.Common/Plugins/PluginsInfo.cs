@@ -26,23 +26,27 @@ namespace Verivox.Common.Plugins
         protected virtual IList<string> GetObsoleteInstalledPluginNames()
         {
             //check whether file exists
-            var filePath = _fileProvider.MapPath(VerivoxPluginDefaults.InstalledPluginsFilePath);
+            string filePath = _fileProvider.MapPath(VerivoxPluginDefaults.InstalledPluginsFilePath);
             if (!_fileProvider.FileExists(filePath))
             {
                 //if not, try to parse the file that was used in previous nopCommerce versions
                 filePath = _fileProvider.MapPath(VerivoxPluginDefaults.ObsoleteInstalledPluginsFilePath);
                 if (!_fileProvider.FileExists(filePath))
+                {
                     return new List<string>();
+                }
 
                 //get plugin system names from the old txt file
-                var pluginSystemNames = new List<string>();
-                using (var reader = new StringReader(_fileProvider.ReadAllText(filePath, Encoding.UTF8)))
+                List<string> pluginSystemNames = new List<string>();
+                using (StringReader reader = new StringReader(_fileProvider.ReadAllText(filePath, Encoding.UTF8)))
                 {
                     string pluginName;
                     while ((pluginName = reader.ReadLine()) != null)
                     {
                         if (!string.IsNullOrWhiteSpace(pluginName))
+                        {
                             pluginSystemNames.Add(pluginName.Trim());
+                        }
                     }
                 }
 
@@ -52,9 +56,11 @@ namespace Verivox.Common.Plugins
                 return pluginSystemNames;
             }
 
-            var text = _fileProvider.ReadAllText(filePath, Encoding.UTF8);
+            string text = _fileProvider.ReadAllText(filePath, Encoding.UTF8);
             if (string.IsNullOrEmpty(text))
+            {
                 return new List<string>();
+            }
 
             //delete the old file
             _fileProvider.DeleteFile(filePath);
@@ -70,7 +76,7 @@ namespace Verivox.Common.Plugins
         /// <returns>True if data are loaded, otherwise False</returns>
         protected virtual bool DeserializePluginInfo(string json)
         {
-            var pluginsInfo = JsonConvert.DeserializeObject<PluginsInfo>(json);
+            PluginsInfo pluginsInfo = JsonConvert.DeserializeObject<PluginsInfo>(json);
 
             InstalledPluginNames = pluginsInfo.InstalledPluginNames;
             PluginNamesToUninstall = pluginsInfo.PluginNamesToUninstall;
@@ -100,8 +106,8 @@ namespace Verivox.Common.Plugins
         public virtual void Save()
         {
             //save the file
-            var filePath = _fileProvider.MapPath(VerivoxPluginDefaults.PluginsInfoFilePath);
-            var text = JsonConvert.SerializeObject(this, Formatting.Indented);
+            string filePath = _fileProvider.MapPath(VerivoxPluginDefaults.PluginsInfoFilePath);
+            string text = JsonConvert.SerializeObject(this, Formatting.Indented);
             _fileProvider.WriteAllText(filePath, text, Encoding.UTF8);
         }
 
@@ -112,7 +118,7 @@ namespace Verivox.Common.Plugins
         public virtual bool LoadPluginInfo()
         {
             //check whether plugins info file exists
-            var filePath = _fileProvider.MapPath(VerivoxPluginDefaults.PluginsInfoFilePath);
+            string filePath = _fileProvider.MapPath(VerivoxPluginDefaults.PluginsInfoFilePath);
             if (!_fileProvider.FileExists(filePath))
             {
                 //file doesn't exist, so try to get only installed plugin names from the obsolete file
@@ -120,11 +126,13 @@ namespace Verivox.Common.Plugins
 
                 //and save info into a new file if need
                 if (InstalledPluginNames.Any())
+                {
                     Save();
+                }
             }
 
             //try to get plugin info from the JSON file
-            var text = _fileProvider.FileExists(filePath) ? _fileProvider.ReadAllText(filePath, Encoding.UTF8) : string.Empty;
+            string text = _fileProvider.FileExists(filePath) ? _fileProvider.ReadAllText(filePath, Encoding.UTF8) : string.Empty;
             return !string.IsNullOrEmpty(text) && DeserializePluginInfo(text);
         }
 

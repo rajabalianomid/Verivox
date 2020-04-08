@@ -28,8 +28,8 @@ namespace Verivox.Common
         /// <returns>IServiceProvider</returns>
         protected IServiceProvider GetServiceProvider()
         {
-            var accessor = ServiceProvider.GetService<IHttpContextAccessor>();
-            var context = accessor.HttpContext;
+            IHttpContextAccessor accessor = ServiceProvider.GetService<IHttpContextAccessor>();
+            HttpContext context = accessor.HttpContext;
             return context?.RequestServices ?? ServiceProvider;
         }
 
@@ -68,7 +68,7 @@ namespace Verivox.Common
             //containerBuilder.Build();
             //return autofacServiceProviderFactory.CreateServiceProvider(containerBuilder);
 
-            var containerBuilder = new ContainerBuilder();
+            ContainerBuilder containerBuilder = new ContainerBuilder();
 
             //register engine
             containerBuilder.RegisterInstance(this).As<IEngine>().SingleInstance();
@@ -77,17 +77,19 @@ namespace Verivox.Common
             containerBuilder.RegisterInstance(typeFinder).As<ITypeFinder>().SingleInstance();
 
             //find dependency registrars provided by other assemblies
-            var dependencyRegistrars = typeFinder.FindClassesOfType<IDependencyRegistrar>();
+            System.Collections.Generic.IEnumerable<Type> dependencyRegistrars = typeFinder.FindClassesOfType<IDependencyRegistrar>();
 
             //create and sort instances of dependency registrars
-            var instances = dependencyRegistrars
+            IOrderedEnumerable<IDependencyRegistrar> instances = dependencyRegistrars
                 //.Where(dependencyRegistrar => PluginManager.FindPlugin(dependencyRegistrar)?.Installed ?? true) //ignore not installed plugins
                 .Select(dependencyRegistrar => (IDependencyRegistrar)Activator.CreateInstance(dependencyRegistrar))
                 .OrderBy(dependencyRegistrar => dependencyRegistrar.Order);
 
             //register all provided dependencies
-            foreach (var dependencyRegistrar in instances)
+            foreach (IDependencyRegistrar dependencyRegistrar in instances)
+            {
                 dependencyRegistrar.Register(containerBuilder);
+            }
 
             //populate Autofac container builder with the set of registered service descriptors
             containerBuilder.Populate(services);
@@ -99,8 +101,8 @@ namespace Verivox.Common
 
         public void ConfigureContainer(ContainerBuilder containerBuilder)
         {
-            var typeFinder = new WebAppTypeFinder();
-            var startupConfigurations = typeFinder.FindClassesOfType<IVerivoxStartup>();
+            WebAppTypeFinder typeFinder = new WebAppTypeFinder();
+            System.Collections.Generic.IEnumerable<Type> startupConfigurations = typeFinder.FindClassesOfType<IVerivoxStartup>();
 
             //register engine
             containerBuilder.RegisterInstance(this).As<IEngine>().SingleInstance();
@@ -109,17 +111,19 @@ namespace Verivox.Common
             containerBuilder.RegisterInstance(typeFinder).As<ITypeFinder>().SingleInstance();
 
             //find dependency registrars provided by other assemblies
-            var dependencyRegistrars = typeFinder.FindClassesOfType<IDependencyRegistrar>();
+            System.Collections.Generic.IEnumerable<Type> dependencyRegistrars = typeFinder.FindClassesOfType<IDependencyRegistrar>();
 
             //create and sort instances of dependency registrars
-            var instances = dependencyRegistrars
+            IOrderedEnumerable<IDependencyRegistrar> instances = dependencyRegistrars
                 //.Where(dependencyRegistrar => PluginManager.FindPlugin(dependencyRegistrar)?.Installed ?? true) //ignore not installed plugins
                 .Select(dependencyRegistrar => (IDependencyRegistrar)Activator.CreateInstance(dependencyRegistrar))
                 .OrderBy(dependencyRegistrar => dependencyRegistrar.Order);
 
             //register all provided dependencies
-            foreach (var dependencyRegistrar in instances)
+            foreach (IDependencyRegistrar dependencyRegistrar in instances)
+            {
                 dependencyRegistrar.Register(containerBuilder);
+            }
         }
 
 
@@ -130,12 +134,14 @@ namespace Verivox.Common
         private Assembly CurrentDomain_AssemblyResolve(object sender, ResolveEventArgs args)
         {
             //check for assembly already loaded
-            var assembly = AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(a => a.FullName == args.Name);
+            Assembly assembly = AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(a => a.FullName == args.Name);
             if (assembly != null)
+            {
                 return assembly;
+            }
 
             //get assembly from TypeFinder
-            var tf = Resolve<ITypeFinder>();
+            ITypeFinder tf = Resolve<ITypeFinder>();
             assembly = tf.GetAssemblies().FirstOrDefault(a => a.FullName == args.Name);
             return assembly;
         }
@@ -149,20 +155,22 @@ namespace Verivox.Common
         public IServiceProvider ConfigureServices(IServiceCollection services, IConfiguration configuration)
         {
             //find startup configurations provided by other assemblies
-            var typeFinder = new WebAppTypeFinder();
-            var startupConfigurations = typeFinder.FindClassesOfType<IVerivoxStartup>();
+            WebAppTypeFinder typeFinder = new WebAppTypeFinder();
+            System.Collections.Generic.IEnumerable<Type> startupConfigurations = typeFinder.FindClassesOfType<IVerivoxStartup>();
 
             //create and sort instances of startup configurations
-            var instances = startupConfigurations
+            IOrderedEnumerable<IVerivoxStartup> instances = startupConfigurations
                 .Select(startup => (IVerivoxStartup)Activator.CreateInstance(startup))
                 .OrderBy(startup => startup.Order);
 
             //configure services
-            foreach (var instance in instances)
+            foreach (IVerivoxStartup instance in instances)
+            {
                 instance.ConfigureServices(services, configuration);
+            }
 
             //register dependencies
-            var config = services.BuildServiceProvider().GetService<VerivoxConfig>();
+            VerivoxConfig config = services.BuildServiceProvider().GetService<VerivoxConfig>();
             _serviceProvider = RegisterDependencies(config, services, typeFinder);
             //resolve assemblies here. otherwise, plugins can throw an exception when rendering views
             AppDomain.CurrentDomain.AssemblyResolve += CurrentDomain_AssemblyResolve;
@@ -193,16 +201,19 @@ namespace Verivox.Common
         public virtual object ResolveUnregistered(Type type)
         {
             Exception innerException = null;
-            foreach (var constructor in type.GetConstructors())
+            foreach (ConstructorInfo constructor in type.GetConstructors())
             {
                 try
                 {
                     //try to resolve constructor parameters
-                    var parameters = constructor.GetParameters().Select(parameter =>
+                    System.Collections.Generic.IEnumerable<object> parameters = constructor.GetParameters().Select(parameter =>
                     {
-                        var service = Resolve(parameter.ParameterType);
+                        object service = Resolve(parameter.ParameterType);
                         if (service == null)
+                        {
                             throw new VerivoxException("Unknown dependency");
+                        }
+
                         return service;
                     });
 

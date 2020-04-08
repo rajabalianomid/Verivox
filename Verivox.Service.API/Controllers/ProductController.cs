@@ -18,15 +18,15 @@ namespace Verivox.Service.API.Controllers
 
         public ProductController(IProductService productService, IWebHelper webHelper)
         {
-            this._productService = productService;
-            this._webHelper = webHelper;
+            _productService = productService;
+            _webHelper = webHelper;
         }
 
         [HttpGet]
         [ProducesResponseType(typeof(IEnumerable<ProductResult>), (int)HttpStatusCode.OK)]
         public IActionResult GetAll(int Consumption)
         {
-            var model = new CommonResponse<List<ProductResult>>();
+            CommonResponse<List<ProductResult>> model = new CommonResponse<List<ProductResult>>();
             try
             {
                 model.Result = _productService.OfferProductsByConsumption(new ProductSearch

@@ -13,7 +13,9 @@ namespace Verivox.Common
         public void RestartAppDomain()
         {
             if (Environment.OSVersion.Platform == PlatformID.Unix)
+            {
                 _applicationLifetime.StopApplication();
+            }
         }
     }
 }

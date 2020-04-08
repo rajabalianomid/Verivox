@@ -12,8 +12,8 @@ namespace Verivox.Common.Data
         /// <param name="services">Collection of service descriptors</param>
         public static void UseSqlServerWithLazyLoading(this DbContextOptionsBuilder optionsBuilder, IServiceCollection services)
         {
-            var nopConfig = services.BuildServiceProvider().GetRequiredService<VerivoxConfig>();
-            var dbContextOptionsBuilder = optionsBuilder.UseLazyLoadingProxies();
+            VerivoxConfig nopConfig = services.BuildServiceProvider().GetRequiredService<VerivoxConfig>();
+            DbContextOptionsBuilder dbContextOptionsBuilder = optionsBuilder.UseLazyLoadingProxies();
             dbContextOptionsBuilder.UseSqlServer(nopConfig.DataConnectionString);
         }
     }

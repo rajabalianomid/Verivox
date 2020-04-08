@@ -13,7 +13,7 @@ namespace Verivox.Common
 
         protected IVerivoxFileProvider _fileProvider;
 
-        private bool _ignoreReflectionErrors = true;
+        private readonly bool _ignoreReflectionErrors = true;
 
         #endregion
 
@@ -21,7 +21,7 @@ namespace Verivox.Common
 
         public AppDomainTypeFinder(IVerivoxFileProvider fileProvider = null)
         {
-            this._fileProvider = fileProvider ?? CommonHelper.DefaultFileProvider;
+            _fileProvider = fileProvider ?? CommonHelper.DefaultFileProvider;
         }
 
         #endregion
@@ -36,14 +36,18 @@ namespace Verivox.Common
         private void AddAssembliesInAppDomain(List<string> addedAssemblyNames, List<Assembly> assemblies)
         {
 
-            var x = AppDomain.CurrentDomain.GetAssemblies().ToList().Where(w => w.FullName.Contains("Verivix"));
-            foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
+            IEnumerable<Assembly> x = AppDomain.CurrentDomain.GetAssemblies().ToList().Where(w => w.FullName.Contains("Verivix"));
+            foreach (Assembly assembly in AppDomain.CurrentDomain.GetAssemblies())
             {
                 if (!Matches(assembly.FullName))
+                {
                     continue;
+                }
 
                 if (addedAssemblyNames.Contains(assembly.FullName))
+                {
                     continue;
+                }
 
                 assemblies.Add(assembly);
                 addedAssemblyNames.Add(assembly.FullName);
@@ -57,11 +61,13 @@ namespace Verivox.Common
         /// <param name="assemblies"></param>
         protected virtual void AddConfiguredAssemblies(List<string> addedAssemblyNames, List<Assembly> assemblies)
         {
-            foreach (var assemblyName in AssemblyNames)
+            foreach (string assemblyName in AssemblyNames)
             {
-                var assembly = Assembly.Load(assemblyName);
+                Assembly assembly = Assembly.Load(assemblyName);
                 if (addedAssemblyNames.Contains(assembly.FullName))
+                {
                     continue;
+                }
 
                 assemblies.Add(assembly);
                 addedAssemblyNames.Add(assembly.FullName);
@@ -108,9 +114,9 @@ namespace Verivox.Common
         /// </param>
         protected virtual void LoadMatchingAssemblies(string directoryPath)
         {
-            var loadedAssemblyNames = new List<string>();
+            List<string> loadedAssemblyNames = new List<string>();
 
-            foreach (var a in GetAssemblies())
+            foreach (Assembly a in GetAssemblies())
             {
                 loadedAssemblyNames.Add(a.FullName);
             }
@@ -120,11 +126,11 @@ namespace Verivox.Common
                 return;
             }
 
-            foreach (var dllPath in _fileProvider.GetFiles(directoryPath, "*.dll"))
+            foreach (string dllPath in _fileProvider.GetFiles(directoryPath, "*.dll"))
             {
                 try
                 {
-                    var an = AssemblyName.GetAssemblyName(dllPath);
+                    AssemblyName an = AssemblyName.GetAssemblyName(dllPath);
                     if (Matches(an.FullName) && !loadedAssemblyNames.Contains(an.FullName))
                     {
                         App.Load(an);
@@ -154,13 +160,15 @@ namespace Verivox.Common
         {
             try
             {
-                var genericTypeDefinition = openGeneric.GetGenericTypeDefinition();
-                foreach (var implementedInterface in type.FindInterfaces((objType, objCriteria) => true, null))
+                Type genericTypeDefinition = openGeneric.GetGenericTypeDefinition();
+                foreach (Type implementedInterface in type.FindInterfaces((objType, objCriteria) => true, null))
                 {
                     if (!implementedInterface.IsGenericType)
+                    {
                         continue;
+                    }
 
-                    var isMatch = genericTypeDefinition.IsAssignableFrom(implementedInterface.GetGenericTypeDefinition());
+                    bool isMatch = genericTypeDefinition.IsAssignableFrom(implementedInterface.GetGenericTypeDefinition());
                     return isMatch;
                 }
 
@@ -220,10 +228,10 @@ namespace Verivox.Common
         /// <returns>Result</returns>
         public IEnumerable<Type> FindClassesOfType(Type assignTypeFrom, IEnumerable<Assembly> assemblies, bool onlyConcreteClasses = true)
         {
-            var result = new List<Type>();
+            List<Type> result = new List<Type>();
             try
             {
-                foreach (var a in assemblies)
+                foreach (Assembly a in assemblies)
                 {
                     Type[] types = null;
                     try
@@ -240,15 +248,21 @@ namespace Verivox.Common
                     }
 
                     if (types == null)
+                    {
                         continue;
+                    }
 
-                    foreach (var t in types)
+                    foreach (Type t in types)
                     {
                         if (!assignTypeFrom.IsAssignableFrom(t) && (!assignTypeFrom.IsGenericTypeDefinition || !DoesTypeImplementOpenGeneric(t, assignTypeFrom)))
+                        {
                             continue;
+                        }
 
                         if (t.IsInterface)
+                        {
                             continue;
+                        }
 
                         if (onlyConcreteClasses)
                         {
@@ -266,11 +280,13 @@ namespace Verivox.Common
             }
             catch (ReflectionTypeLoadException ex)
             {
-                var msg = string.Empty;
-                foreach (var e in ex.LoaderExceptions)
+                string msg = string.Empty;
+                foreach (Exception e in ex.LoaderExceptions)
+                {
                     msg += e.Message + Environment.NewLine;
+                }
 
-                var fail = new Exception(msg, ex);
+                Exception fail = new Exception(msg, ex);
                 Debug.WriteLine(fail.Message, fail);
 
                 throw fail;
@@ -285,11 +301,14 @@ namespace Verivox.Common
         /// <returns>A list of assemblies</returns>
         public virtual IList<Assembly> GetAssemblies()
         {
-            var addedAssemblyNames = new List<string>();
-            var assemblies = new List<Assembly>();
+            List<string> addedAssemblyNames = new List<string>();
+            List<Assembly> assemblies = new List<Assembly>();
 
             if (LoadAppDomainAssemblies)
+            {
                 AddAssembliesInAppDomain(addedAssemblyNames, assemblies);
+            }
+
             AddConfiguredAssemblies(addedAssemblyNames, assemblies);
 
             return assemblies;

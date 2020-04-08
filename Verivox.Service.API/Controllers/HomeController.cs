@@ -7,6 +7,9 @@ namespace Verivox.Service.API.Controllers
     public class HomeController : ControllerBase
     {
         [HttpGet("")]
-        public IActionResult Get() => Content("API Is Up");
+        public IActionResult Get()
+        {
+            return Content("API Is Up");
+        }
     }
 }

@@ -23,7 +23,7 @@ namespace Verivox.Data
 
         public EfRepository(IDbContext context)
         {
-            this._context = context;
+            _context = context;
         }
 
         #endregion
@@ -40,7 +40,7 @@ namespace Verivox.Data
             //rollback entity changes
             if (_context is DbContext dbContext)
             {
-                var entries = dbContext.ChangeTracker.Entries()
+                List<Microsoft.EntityFrameworkCore.ChangeTracking.EntityEntry> entries = dbContext.ChangeTracker.Entries()
                     .Where(e => e.State == EntityState.Added || e.State == EntityState.Modified).ToList();
 
                 entries.ForEach(entry => entry.State = EntityState.Unchanged);
@@ -76,7 +76,9 @@ namespace Verivox.Data
         public virtual void Insert(TEntity entity)
         {
             if (entity == null)
+            {
                 throw new ArgumentNullException(nameof(entity));
+            }
 
             try
             {
@@ -97,7 +99,9 @@ namespace Verivox.Data
         public virtual void Insert(IEnumerable<TEntity> entities)
         {
             if (entities == null)
+            {
                 throw new ArgumentNullException(nameof(entities));
+            }
 
             try
             {
@@ -118,7 +122,9 @@ namespace Verivox.Data
         public virtual void Update(TEntity entity)
         {
             if (entity == null)
+            {
                 throw new ArgumentNullException(nameof(entity));
+            }
 
             try
             {
@@ -139,7 +145,9 @@ namespace Verivox.Data
         public virtual void Update(IEnumerable<TEntity> entities)
         {
             if (entities == null)
+            {
                 throw new ArgumentNullException(nameof(entities));
+            }
 
             try
             {
@@ -160,7 +168,9 @@ namespace Verivox.Data
         public virtual void Delete(TEntity entity)
         {
             if (entity == null)
+            {
                 throw new ArgumentNullException(nameof(entity));
+            }
 
             try
             {
@@ -181,7 +191,9 @@ namespace Verivox.Data
         public virtual void Delete(IEnumerable<TEntity> entities)
         {
             if (entities == null)
+            {
                 throw new ArgumentNullException(nameof(entities));
+            }
 
             try
             {
@@ -217,7 +229,9 @@ namespace Verivox.Data
             get
             {
                 if (_entities == null)
+                {
                     _entities = _context.Set<TEntity>();
+                }
 
                 return _entities;
             }

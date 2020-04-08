@@ -27,7 +27,7 @@ namespace Verivox.Data
         public virtual void Configure(EntityTypeBuilder<TEntity> builder)
         {
             //add custom configuration
-            this.PostConfigure(builder);
+            PostConfigure(builder);
         }
 
         /// <summary>

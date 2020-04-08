@@ -11,20 +11,20 @@ namespace Verivox.Data.Test
         [Fact]
         public void Check_GetAll()
         {
-            var builder = new DbContextOptionsBuilder<Context>();
+            DbContextOptionsBuilder<Context> builder = new DbContextOptionsBuilder<Context>();
             builder.UseInMemoryDatabase(databaseName: "Verivox");
-            var options = builder.Options;
+            DbContextOptions<Context> options = builder.Options;
 
-            using (var context = new Context(options))
+            using (Context context = new Context(options))
             {
                 context.AddRange(GetAllData());
                 context.SaveChanges();
             }
 
-            using (var context = new Context(options))
+            using (Context context = new Context(options))
             {
-                var repository = new EfRepository<Product>(context);
-                var found = repository.Table.OrderBy(o => o.Id).ToList();
+                EfRepository<Product> repository = new EfRepository<Product>(context);
+                List<Product> found = repository.Table.OrderBy(o => o.Id).ToList();
                 Assert.Equal(4, found.Count);
                 Assert.Equal(30, found.First().BaseAmount);
             }
