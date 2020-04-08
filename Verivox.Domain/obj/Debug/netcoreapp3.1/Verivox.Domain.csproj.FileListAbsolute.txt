@@ -1,8 +1,0 @@
-C:\Users\rajab\Source\Repos\Verivox\Verivox.Domain\bin\Debug\netcoreapp3.1\Verivox.Domain.deps.json
-C:\Users\rajab\Source\Repos\Verivox\Verivox.Domain\bin\Debug\netcoreapp3.1\Verivox.Domain.dll
-C:\Users\rajab\Source\Repos\Verivox\Verivox.Domain\bin\Debug\netcoreapp3.1\Verivox.Domain.pdb
-C:\Users\rajab\Source\Repos\Verivox\Verivox.Domain\obj\Debug\netcoreapp3.1\Verivox.Domain.AssemblyInfoInputs.cache
-C:\Users\rajab\Source\Repos\Verivox\Verivox.Domain\obj\Debug\netcoreapp3.1\Verivox.Domain.AssemblyInfo.cs
-C:\Users\rajab\Source\Repos\Verivox\Verivox.Domain\obj\Debug\netcoreapp3.1\Verivox.Domain.dll
-C:\Users\rajab\Source\Repos\Verivox\Verivox.Domain\obj\Debug\netcoreapp3.1\Verivox.Domain.pdb
-C:\Users\rajab\Source\Repos\Verivox\Verivox.Domain\obj\Debug\netcoreapp3.1\Verivox.Domain.csprojAssemblyReference.cache
