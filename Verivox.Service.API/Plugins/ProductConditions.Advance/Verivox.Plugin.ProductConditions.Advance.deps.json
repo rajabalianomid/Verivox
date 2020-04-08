@@ -2083,7 +2083,7 @@
     "Pipelines.Sockets.Unofficial/1.0.7": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-n+YKaKVd9ZSa7uVeT0gyOT8eoeCWbiTdpVtnHkjthqmVerivoxVPc4+efRQUReO+WH3WFyVKxgn5QS4BLi2Q+sioqA==",
+      "sha512": "sha512-n+YKaKVd9ZSa7uVeT0gyOT8eoeCWbiTdpVtnHkjthqmNopVPc4+efRQUReO+WH3WFyVKxgn5QS4BLi2Q+sioqA==",
       "path": "pipelines.sockets.unofficial/1.0.7",
       "hashPath": "pipelines.sockets.unofficial.1.0.7.nupkg.sha512"
     },
