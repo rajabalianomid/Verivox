@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Verivox.Common.Plugins
+﻿namespace Verivox.Common.Plugins
 {
     /// <summary>
     /// Represents a plugin manager

@@ -1,19 +1,19 @@
-﻿using Verivox.Data.SampleData;
-using Verivox.Domain;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Storage;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Data;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using Verivox.Common.Data;
-using System.Data;
-using System.Reflection;
+using Verivox.Data.SampleData;
+using Verivox.Domain;
 
 namespace Verivox.Data
 {

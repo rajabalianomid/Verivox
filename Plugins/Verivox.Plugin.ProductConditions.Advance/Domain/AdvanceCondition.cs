@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Verivox.Domain;
+﻿using Verivox.Domain;
 
 namespace Verivox.Plugin.ProductConditions.Advance.Domain
 {

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Verivox.Domain
+﻿namespace Verivox.Domain
 {
     public class ProductResult
     {

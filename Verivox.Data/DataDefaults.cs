@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Verivox.Data
+﻿namespace Verivox.Data
 {
     public static partial class DataDefaults
     {

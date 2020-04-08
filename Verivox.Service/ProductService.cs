@@ -1,13 +1,8 @@
-﻿using Verivox.Common;
-using Verivox.Common.Domain;
+﻿using System.Collections.Generic;
+using System.Linq;
+using Verivox.Common;
 using Verivox.Domain;
 using Verivox.Domain.Search;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Verivox.Service
 {

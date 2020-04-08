@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Verivox.Domain
+﻿namespace Verivox.Domain
 {
     public abstract partial class BaseEntity
     {

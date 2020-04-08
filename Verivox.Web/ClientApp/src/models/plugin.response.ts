@@ -4,6 +4,6 @@ interface PluginResponse {
   Installed: boolean;
 }
 interface PluginCollectionResponse {
-  Plugins: PluginResponse,
-  NeedToRestart: boolean
+  Plugins: PluginResponse;
+  NeedToRestart: boolean;
 }

@@ -1,10 +1,5 @@
-﻿using Verivox.Domain;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
-using Verivox.Common.Plugins;
-using Verivox.Common;
+﻿using System.Collections.Generic;
+using Verivox.Domain;
 using Verivox.Domain.Search;
 
 namespace Verivox.Service

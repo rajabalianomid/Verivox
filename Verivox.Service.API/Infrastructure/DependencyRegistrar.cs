@@ -1,14 +1,8 @@
 ﻿using Autofac;
-using Verivox.Common;
-using Verivox.Data;
-using Verivox.Service;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using Verivox.Common;
 using Verivox.Common.Data;
-using Verivox.Common.Plugins;
+using Verivox.Data;
 
 namespace Verivox.Service.API.Infrastructure
 {

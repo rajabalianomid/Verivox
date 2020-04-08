@@ -1,11 +1,9 @@
-﻿using Verivox.Common;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Data.Common;
 using System.Data.SqlClient;
 using System.Linq;
-using System.Text;
 using System.Threading;
+using Verivox.Common;
 using Verivox.Common.Data;
 
 namespace Verivox.Data

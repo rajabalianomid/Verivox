@@ -1,12 +1,11 @@
-﻿using Verivox.Common;
-using Verivox.Domain;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
+using Verivox.Common;
 using Verivox.Common.Data;
+using Verivox.Domain;
 
 namespace Verivox.Data
 {

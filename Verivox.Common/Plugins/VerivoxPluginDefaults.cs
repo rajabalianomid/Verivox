@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Verivox.Common.Plugins
+﻿namespace Verivox.Common.Plugins
 {
     public static partial class VerivoxPluginDefaults
     {
@@ -47,11 +43,6 @@ namespace Verivox.Common.Plugins
         public static string DescriptionFileName => "plugin.json";
 
         /// <summary>
-        /// Gets the plugins logo filename
-        /// </summary>
-        public static string LogoFileName => "logo";
-
-        /// <summary>
         /// Gets the name of reserve folder for plugins shadow copies
         /// </summary>
         public static string ReserveShadowCopyPathName => "reserve_bin_";
@@ -60,43 +51,5 @@ namespace Verivox.Common.Plugins
         /// Gets the name pattern of reserve folder for plugins shadow copies
         /// </summary>
         public static string ReserveShadowCopyPathNamePattern => "reserve_bin_*";
-
-        /// <summary>
-        /// Gets supported extensions of logo file
-        /// </summary>
-        public static List<string> SupportedLogoImageExtensions => new List<string> { "jpg", "png", "gif" };
-
-        /// <summary>
-        /// Gets the path to temp directory with uploads
-        /// </summary>
-        public static string UploadsTempPath => "~/App_Data/TempUploads";
-
-        /// <summary>
-        /// Gets the name of the file containing information about the uploaded items
-        /// </summary>
-        public static string UploadedItemsFileName => "uploadedItems.json";
-
-        /// <summary>
-        /// Gets the path to themes folder
-        /// </summary>
-        public static string ThemesPath => "~/Themes";
-
-        /// <summary>
-        /// Gets the name of the theme description file
-        /// </summary>
-        public static string ThemeDescriptionFileName => "theme.json";
-
-        /// <summary>
-        /// Gets a key for caching plugins for admin navigation
-        /// </summary>
-        /// <remarks>
-        /// {0} : customer identifier
-        /// </remarks>
-        public static string AdminNavigationPluginsCacheKey => "Nop.plugins.adminnavigation-{0}";
-
-        /// <summary>
-        /// Gets a key to clear cache
-        /// </summary>
-        public static string AdminNavigationPluginsPrefixCacheKey => "Nop.plugins.adminnavigation";
     }
 }

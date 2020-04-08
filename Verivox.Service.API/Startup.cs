@@ -1,15 +1,14 @@
+using Autofac;
+using AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Verivox.Service.API.Infrastructure;
+using Microsoft.OpenApi.Models;
 //using AutoMapper;
 using System;
-using AutoMapper;
-using Autofac;
-using Verivox.Common;
-using Microsoft.OpenApi.Models;
+using Verivox.Service.API.Infrastructure;
 
 namespace Verivox.Service.API
 {

@@ -1,12 +1,8 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using Verivox.Common;
-using Verivox.Common.Plugins;
 using Verivox.Domain;
 using Verivox.Domain.Search;
 using Verivox.Service.API.Models;
@@ -30,11 +26,20 @@ namespace Verivox.Service.API.Controllers
         [ProducesResponseType(typeof(IEnumerable<ProductResult>), (int)HttpStatusCode.OK)]
         public IActionResult GetAll(int Consumption)
         {
-            var result = _productService.OfferProductsByConsumption(new ProductSearch
+            var model = new CommonResponse<List<ProductResult>>();
+            try
             {
-                Consumption = Consumption
-            });
-            return Ok(result);
+                model.Result = _productService.OfferProductsByConsumption(new ProductSearch
+                {
+                    Consumption = Consumption
+                });
+            }
+            catch (Exception)
+            {
+                model.IsError = true;
+                model.Message = "Occur an error, please try later!";
+            }
+            return Ok(model);
         }
     }
 }

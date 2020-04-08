@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Verivox.Service
+﻿namespace Verivox.Service
 {
     public class ServiceEnums
     {

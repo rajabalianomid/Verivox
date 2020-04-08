@@ -6,7 +6,6 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using Verivox.Common;
 using Verivox.Common.Plugins;
 
@@ -85,7 +84,7 @@ namespace Verivox.Service.API.Infrastructure.Extensions
         /// <summary>
         /// Copy the plugin assembly file to the shadow copy directory
         /// </summary>
-        /// <param name="fileProvider">Nop file provider</param>
+        /// <param name="fileProvider">Verivox file provider</param>
         /// <param name="assemblyFile">Path to the plugin assembly file</param>
         /// <param name="shadowCopyDirectory">Path to the shadow copy directory</param>
         /// <returns>Path to the shadow copied file</returns>
@@ -182,8 +181,8 @@ namespace Verivox.Service.API.Infrastructure.Extensions
         /// <param name="applicationPartManager">Application part manager</param>
         /// <param name="assemblyFile">Path to the plugin assembly file</param>
         /// <param name="shadowCopyDirectory">Path to the shadow copy directory</param>
-        /// <param name="config">Nop config</param>
-        /// <param name="fileProvider">Nop file provider</param>
+        /// <param name="config">Verivox config</param>
+        /// <param name="fileProvider">Verivox file provider</param>
         /// <returns>Assembly</returns>
         private static Assembly PerformFileDeploy(this ApplicationPartManager applicationPartManager,
             string assemblyFile, string shadowCopyDirectory, VerivoxConfig config, IVerivoxFileProvider fileProvider)

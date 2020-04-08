@@ -1,15 +1,11 @@
-﻿using Verivox.Common;
-using Verivox.Data;
+﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using Verivox.Common;
+using Verivox.Data;
 using Verivox.Service.API.Infrastructure.Extensions;
-using Microsoft.AspNetCore.Hosting;
-using Autofac;
 
 namespace Verivox.Service.API.Infrastructure
 {
@@ -29,9 +25,9 @@ namespace Verivox.Service.API.Infrastructure
 
             //create, initialize and configure the engine
             var engine = EngineContext.Create();
-            var serviceProvider = engine.ConfigureServices(services,configuration);
+            var serviceProvider = engine.ConfigureServices(services, configuration);
             SqlServerDataProvider.InitializeDatabase(config.DataConnectionString);
-            
+
             engine.Resolve<IPluginService>().InstallPlugins();
 
             return serviceProvider;

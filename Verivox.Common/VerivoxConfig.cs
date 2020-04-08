@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Verivox.Common
+﻿namespace Verivox.Common
 {
     public partial class VerivoxConfig
     {

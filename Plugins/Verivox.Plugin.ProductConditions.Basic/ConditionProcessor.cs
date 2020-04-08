@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Verivox.Common;
 using Verivox.Common.Plugins;
 using Verivox.Domain;
 using Verivox.Domain.Search;
 using Verivox.Plugin.ProductConditions.Basic.Data;
-using Verivox.Plugin.ProductConditions.Basic.Domain;
 using Verivox.Plugin.ProductConditions.Basic.Service;
 
 namespace Verivox.Plugin.ProductConditions.Basic

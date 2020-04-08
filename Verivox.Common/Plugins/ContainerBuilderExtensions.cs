@@ -1,8 +1,6 @@
 ﻿using Autofac;
 using Microsoft.EntityFrameworkCore;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using Verivox.Common.Data;
 
 namespace Verivox.Common.Plugins

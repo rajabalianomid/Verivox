@@ -6,7 +6,7 @@ using System.Text;
 
 namespace Verivox.Common
 {
-    public interface IVerivoxFileProvider: IFileProvider
+    public interface IVerivoxFileProvider : IFileProvider
     {
         /// <summary>
         /// Combines an array of strings into a path

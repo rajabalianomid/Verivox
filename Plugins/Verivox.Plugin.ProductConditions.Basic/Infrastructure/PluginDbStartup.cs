@@ -1,10 +1,6 @@
 ﻿using Microsoft.AspNetCore.Builder;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using Verivox.Common;
 using Verivox.Common.Data;
 using Verivox.Plugin.ProductConditions.Basic.Data;

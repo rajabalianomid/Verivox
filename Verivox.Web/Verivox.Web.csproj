@@ -26,6 +26,7 @@
   <ItemGroup>
     <None Remove="ClientApp\proxy.config.json" />
     <None Remove="ClientApp\src\app\app-config.model.ts" />
+    <None Remove="ClientApp\src\models\CommonResponse.ts" />
     <None Remove="ClientApp\src\models\plugin.request.ts" />
     <None Remove="ClientApp\src\models\plugin.response.ts" />
   </ItemGroup>
@@ -33,6 +34,9 @@
   <ItemGroup>
     <TypeScriptCompile Include="ClientApp\proxy.config.json" />
     <TypeScriptCompile Include="ClientApp\src\models\app-config.model.ts" />
+    <TypeScriptCompile Include="ClientApp\src\models\CommonResponse.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
     <TypeScriptCompile Include="ClientApp\src\models\plugin.request.ts" />
     <TypeScriptCompile Include="ClientApp\src\models\plugin.response.ts" />
   </ItemGroup>

@@ -2,8 +2,11 @@
 <div class="alert alert-info" role="alert">
   <p>After Install/Unistall you need restart your application for working as well</p>
 </div>
-<p *ngIf="!pluginsmodel.plugins"><em>Loading...</em></p>
-<table class='table table-striped' aria-labelledby="tableLabel" *ngIf="pluginsmodel.plugins">
+<div *ngIf="pluginsmodel && pluginsmodel.isError" class="alert alert-danger" role="alert">
+  <p>{{ pluginsmodel.message }}</p>
+</div>
+<p *ngIf="!pluginsmodel"><em>Loading...</em></p>
+<table class='table table-striped' aria-labelledby="tableLabel" *ngIf="pluginsmodel">
   <thead>
     <tr>
       <th>Name</th>
@@ -12,9 +15,9 @@
     </tr>
   </thead>
   <tbody>
-    <tr *ngFor="let item of pluginsmodel.plugins">
+    <tr *ngFor="let item of pluginsmodel.result.plugins">
       <td>{{ item.name}}</td>
-      <td>{{ item.description}}</td>
+      <td>{{ item.description }}</td>
       <td><button class="btn btn-primary" (click)="Install(item.name , !item.installed)">{{item.installed?'Uninstall':'Install'}}</button></td>
     </tr>
   </tbody>

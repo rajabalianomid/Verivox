@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Verivox.Domain
+﻿namespace Verivox.Domain
 {
-    public partial class Product: BaseEntity
+    public partial class Product : BaseEntity
     {
         public string Name { get; set; }
         public decimal BaseAmount { get; set; }

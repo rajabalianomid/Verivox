@@ -1,10 +1,8 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using Verivox.Common;
 using Verivox.Common.Plugins;
 using Verivox.Service.API.Models;
@@ -16,24 +14,36 @@ namespace Verivox.Service.API.Controllers
     public class PluginController : ControllerBase
     {
         private readonly IPluginService _pluginService;
-        private readonly IWebHelper _webHelper;
 
         public PluginController(IPluginService pluginService, IWebHelper webHelper)
         {
             this._pluginService = pluginService;
-            this._webHelper = webHelper;
         }
 
         [HttpGet]
         [ProducesResponseType(typeof(IEnumerable<Plugin>), (int)HttpStatusCode.OK)]
         public IActionResult GetAll()
         {
-            var result = new PluginCollection
+            var model = new CommonResponse<PluginCollection>();
+            try
             {
-                Plugins = _pluginService.GetPluginDescriptors<IPlugin>().Select(s => new Plugin { Description = s.Description, Name = s.SystemName, Installed = s.Installed }),
-                NeedToRestart = _pluginService.NeedToRestart
-            };
-            return Ok(result);
+                model.Result = new PluginCollection
+                {
+                    Plugins = _pluginService.GetPluginDescriptors<IPlugin>().Select(s => new Plugin
+                    {
+                        Description = s.Description,
+                        Name = s.SystemName,
+                        Installed = s.Installed
+                    }),
+                    NeedToRestart = _pluginService.NeedToRestart
+                };
+            }
+            catch (Exception)
+            {
+                model.IsError = true;
+                model.Message = "Occur an error, please try later!";
+            }
+            return Ok(model);
         }
 
         [HttpPost]

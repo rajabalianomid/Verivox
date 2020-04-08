@@ -1,9 +1,5 @@
-﻿using Verivox.Domain;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using Verivox.Data;
 using Verivox.Plugin.ProductConditions.Basic.Domain;
 

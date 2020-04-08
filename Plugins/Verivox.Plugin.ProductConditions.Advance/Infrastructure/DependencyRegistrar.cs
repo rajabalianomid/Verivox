@@ -1,16 +1,12 @@
 ﻿using Autofac;
-using System;
-using System.Collections.Generic;
-using System.Text;
+using Autofac.Core;
 using Verivox.Common;
-using Verivox.Plugin.ProductConditions.Advance.Data;
-using Verivox.Plugin.ProductConditions.Advance.Service;
+using Verivox.Common.Data;
 using Verivox.Common.Plugins;
 using Verivox.Data;
-using Verivox.Common.Data;
-using Autofac.Core;
+using Verivox.Plugin.ProductConditions.Advance.Data;
 using Verivox.Plugin.ProductConditions.Advance.Domain;
-using Microsoft.EntityFrameworkCore;
+using Verivox.Plugin.ProductConditions.Advance.Service;
 
 namespace Verivox.Plugin.ProductConditions.Advance.Infrastructure
 {

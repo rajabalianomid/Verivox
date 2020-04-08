@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Verivox.Common.Plugins;
-using Verivox.Domain.Search;
+﻿using Verivox.Common.Plugins;
 
 namespace Verivox.Common
 {
