@@ -1,6 +1,6 @@
 # README #
 
-This application is base on plugins, you could add functionality witout modify app core, for example in this application I implemented 2 plugins
+This application is base on plugins, you could add functionality without modify app core, for example in this application I implemented 2 plugins
 
 ### The technologie implemented ###
 
