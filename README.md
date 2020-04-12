@@ -15,7 +15,7 @@ This application is base on plugins, you could add functionality without modify 
 To help you get started, we've also set up:
 ### 1) User Interfaces: ###
  Application has 2 parts Verivox.Service.API: WebAPI, Verivox.Web: Simple user Interface for managing application functionality
- This application is base on plugins, you could add functionality witout modify app core, for example in this application I implemented 2 plugins
+ This application is base on plugins, you could add functionality without modify app core, for example in this application I implemented 2 plugins
 
 ### 2) Plugins: ###
 * Verivox.Plugin.ProductConditions.Basic: For simple calculate Tariff Comparison
