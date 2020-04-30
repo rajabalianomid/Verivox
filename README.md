@@ -1,6 +1,6 @@
 # README #
 
-This application is base on plugins, you could add functionality without modify app core
+This application is base on Plug And Play Architecture , you could add functionality without modify app core
 
 ### The technologie implemented ###
 
